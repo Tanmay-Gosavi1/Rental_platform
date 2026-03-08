@@ -3,7 +3,7 @@ import './index.css'
 import App from './App.jsx'
 import {BrowserRouter} from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
-import { Toaster } from 'react-hot-toast'
+// import { Toaster } from 'react-hot-toast'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 
 createRoot(document.getElementById('root')).render(
@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <BrowserRouter>
         <App />
-        <Toaster position='top-center'/>
+        {/* <Toaster position='top-center'/> */}
       </BrowserRouter>
     </AuthProvider>
   </GoogleOAuthProvider>

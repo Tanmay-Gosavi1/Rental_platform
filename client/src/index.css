@@ -1,5 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit');
 @import "tailwindcss";
+*{
+    font-family: 'Outfit';
+}
+
 .password-input::-ms-reveal{
     display: none;
 }

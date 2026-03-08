@@ -10,43 +10,58 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user , setUser] = useState(null)
     const [loading , setLoading] = useState(true)
+
     const checkAuthStatus = async () => {
         try {
             const res = await axiosInstance.get("/user/profile")
             if(res.data.success) {
-                setUser(res.data.user)
-            }else {
+                setUser(res.data.user) 
+            } else {
                 setUser(null)
             }
-        } catch {
+        } catch (error) {
+            console.log("User not authenticated")
             setUser(null)
         } finally {
             setLoading(false)
         }
     }
     
-    const login = (userData) => { //
+    const login = (userData) => {
         setUser(userData);
     };
 
     const logout = async () => {
-        await axiosInstance.post("/auth/logout" , {});
+        try {
+            await axiosInstance.post("/auth/logout", {});
+        } catch (error) {
+            console.log("Logout error:", error)
+        }
         setUser(null);
     };
 
-    useEffect(()=>{
-        checkAuthStatus()
-    },[])
+    const refreshUser = async () => {
+        await checkAuthStatus();
+    };
 
-    const isAuthenticated = !!user; // Convert user object to boolean
+    useEffect(() => {
+        checkAuthStatus()
+    }, [])
+
+    const isAuthenticated = !!user;
+    const isAdmin = user?.role === 'admin';
+    const isCustomer = user?.role === 'customer';
 
     const value = {
-        user ,
-        isAuthenticated, // Convert user object to boolean
-        setUser ,
-        loading ,
-        login ,
-        logout ,
+        user,
+        isAuthenticated,
+        isAdmin,
+        isCustomer,
+        setUser,
+        loading,
+        login,
+        logout,
+        refreshUser,
         setLoading
     }
 

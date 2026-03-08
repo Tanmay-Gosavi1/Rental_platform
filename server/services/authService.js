@@ -69,4 +69,40 @@ export const deleteOtpByEmail = async (email) => {
     await db.query(
         'DELETE FROM OTPs WHERE email = ?', [email]
     )
-}   
+}
+
+export const findAllUsers = async () => {
+    const db = getDB();
+    const [rows] = await db.query(
+        'SELECT user_id, username, email, phone, role, profile_image, created_at FROM Users ORDER BY created_at DESC'
+    );
+    return rows;
+}
+
+export const updateUserProfile = async (id, userData) => {
+    const db = getDB();
+    const fields = [];
+    const values = [];
+
+    if (userData.username !== undefined) {
+        fields.push('username = ?');
+        values.push(userData.username);
+    }
+    if (userData.phone !== undefined) {
+        fields.push('phone = ?');
+        values.push(userData.phone);
+    }
+    if (userData.profile_image !== undefined) {
+        fields.push('profile_image = ?');
+        values.push(userData.profile_image);
+    }
+
+    if (fields.length === 0) return null;
+
+    values.push(id);
+    const [result] = await db.query(
+        `UPDATE Users SET ${fields.join(', ')} WHERE user_id = ?`,
+        values
+    );
+    return result.affectedRows > 0;
+}
