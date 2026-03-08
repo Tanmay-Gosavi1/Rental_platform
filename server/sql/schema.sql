@@ -1,0 +1,23 @@
+DROP DATABASE IF EXISTS rental_platform;
+CREATE DATABASE rental_platform;
+USE rental_platform;
+
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL ,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) DEFAULT NULL CHECK(LENGTH(PASSWORD) >= 6),
+    auth_provider ENUM('local', 'google', 'facebook') DEFAULT 'local',
+    role ENUM('customer', 'admin') DEFAULT 'customer', 
+    googleId VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE OTPs (
+    otp_id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(100) NOT NULL,
+    otp VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

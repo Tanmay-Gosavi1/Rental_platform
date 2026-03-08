@@ -1,31 +1,43 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
-import cors from 'cors';
-import morgan from 'morgan';
-import connectDB from './config/db.js';
-import routes from './routes/index.js';
-dotenv.config();
+import express from 'express'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import helmet from 'helmet'
+import morgan from 'morgan'
+import cookieParser from 'cookie-parser'
+import routes from './routes/index.js'
+import { initDB } from './config/db.js'
 
-connectDB();
-const app = express();
+dotenv.config()
+const app = express()
+const PORT = process.env.PORT || 3000
 
-const allowedOrigins = [process.env.CLIENT_URL]
+const allowedOrigins = [process.env.FRONTEND_URL ,'http://localhost:5173/'];
 
-app.use(helmet());
-app.use(cors({ origin: allowedOrigins, credentials: true }));
-app.use(morgan('dev'));
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/api', routes);
+app.use(cors({
+  origin : allowedOrigins ,
+  credentials : true,
+})); 
+app.use(helmet())
+app.use(morgan('dev'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
+app.use('/api', routes)
 
-const PORT = process.env.PORT || 5000;  
 app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+  res.send('🚗 Car Rental API ')
+})
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await initDB();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+}
+startServer();

@@ -1,5 +1,5 @@
 import  { OAuth2Client } from 'google-auth-library';
-import User from '../models/userModel.js';
+import {findUserByEmail , createUser, updateUserGoogleAuth} from '../services/authService.js';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
@@ -22,7 +22,7 @@ export const googleAuth = async (req, res) => {
         const { name, email, sub: googleId } = googleResponse.data;
 
         // check if user already exists
-        let user = await User.findOne({ email });
+        let user = await findUserByEmail(email);
 
         // If user exists with google auth, verify googleId
         if(user && user.authProvider === 'google'){
@@ -32,20 +32,18 @@ export const googleAuth = async (req, res) => {
         }
         // If user exists with local auth, link google account
         else if(user && user.authProvider === 'local') {
-            user.googleId = googleId;
-            user.authProvider = 'google';
-            await user.save();
+            await updateUserGoogleAuth(email, googleId);
         }
         // If user doesn't exist, create a new user
         else if(!user) {
-            user = await User.create({
+            user = await createUser({
                 username: name,
                 email,
                 authProvider: 'google',
                 googleId,
             });
         }
-        const token = jwt.sign({id : user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const token = jwt.sign({id : user.user_id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.cookie('token' , token , {
             httpOnly: true,
