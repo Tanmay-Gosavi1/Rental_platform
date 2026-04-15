@@ -16,6 +16,7 @@ export const getProfile = async (req, res) => {
                 phone: user.phone,
                 role: user.role,
                 profile_image: user.profile_image,
+                google_id: user.google_id,
                 created_at: user.created_at
             }
         });
@@ -46,7 +47,9 @@ export const updateProfile = async (req, res) => {
                 email: updatedUser.email,
                 phone: updatedUser.phone,
                 role: updatedUser.role,
-                profile_image: updatedUser.profile_image
+                profile_image: updatedUser.profile_image,
+                google_id: updatedUser.google_id,
+                created_at: updatedUser.created_at
             }
         });
     } catch (error) {

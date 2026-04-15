@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomerLayout from '../../components/layout/CustomerLayout';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../utils/axiosInstance';
@@ -17,13 +17,20 @@ import {
 
 const Profile = () => {
     const { user, refreshUser } = useAuth();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         username: user?.username || '',
         phone: user?.phone || '',
         profile_image: user?.profile_image || ''
     });
+
+    useEffect(() => {
+        setFormData({
+            username: user?.username || '',
+            phone: user?.phone || '',
+            profile_image: user?.profile_image || ''
+        });
+    }, [user]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -34,7 +41,7 @@ const Profile = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await axiosInstance.put('/users/profile', formData);
+            const response = await axiosInstance.put('/user/profile', formData);
             if (response.data.success) {
                 toast.success('Profile updated successfully');
                 if (refreshUser) {

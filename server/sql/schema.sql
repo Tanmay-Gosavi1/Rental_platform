@@ -35,7 +35,7 @@ CREATE TABLE Vehicles (
     seats INT DEFAULT 4,
     price_per_day DECIMAL(10, 2) NOT NULL,
     price_per_hour DECIMAL(10, 2) DEFAULT NULL,
-    location VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL, 
     description TEXT DEFAULT NULL,
     image_url VARCHAR(500) DEFAULT NULL,
     images JSON DEFAULT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE Reviews (
 
 -- Insert default admin user (password: admin123)
 INSERT INTO Users (username, email, password, role) VALUES 
-('Admin', 'admin@rentify.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('Admin', 'admin@autotrack.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
 
 -- Insert sample vehicles
 INSERT INTO Vehicles (name, brand, model, type, fuel_type, transmission, seats, price_per_day, price_per_hour, location, description, image_url, features, is_available) VALUES

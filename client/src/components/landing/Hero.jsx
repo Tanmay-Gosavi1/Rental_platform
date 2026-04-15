@@ -53,7 +53,7 @@ const Navbar = () => {
                     {/* Logo */}
                     <button onClick={() => scrollTo('hero-top')} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                         <LoaderPinwheel className="h-6 w-6 sm:h-7 sm:w-7" />
-                        <span className="text-xl sm:text-2xl font-bold tracking-tight">Rentify</span>
+                        <span className="text-xl sm:text-2xl font-bold tracking-tight">AutoTrack</span>
                     </button>
 
                     {/* Desktop Nav */}

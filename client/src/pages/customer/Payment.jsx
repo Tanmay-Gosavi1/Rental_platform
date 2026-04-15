@@ -22,24 +22,10 @@ const Payment = () => {
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
-    const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
     useEffect(() => {
-        loadRazorpay();
         fetchBookingDetails();
     }, [bookingId]);
-
-    const loadRazorpay = () => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.async = true;
-        script.onload = () => setRazorpayLoaded(true);
-        script.onerror = () => {
-            toast.error('Failed to load payment gateway');
-            setRazorpayLoaded(false);
-        };
-        document.body.appendChild(script);
-    };
 
     const fetchBookingDetails = async () => {
         try {
@@ -61,79 +47,22 @@ const Payment = () => {
     };
 
     const handlePayment = async () => {
-        if (!razorpayLoaded) {
-            toast.error('Payment gateway not loaded. Please refresh.');
-            return;
-        }
-
         setProcessing(true);
         try {
-            // Create Razorpay order
-            const orderResponse = await axiosInstance.post('/payments/create-order', {
+            const response = await axiosInstance.post('/payments/dummy-success', {
                 booking_id: parseInt(bookingId)
             });
 
-            if (!orderResponse.data.success) {
-                throw new Error(orderResponse.data.message);
+            if (response.data.success) {
+                toast.success('Payment successful!');
+                navigate('/bookings');
+            } else {
+                toast.error(response.data.message || 'Payment failed');
             }
-
-            const { order, key_id } = orderResponse.data.data;
-
-            // Razorpay checkout options
-            const options = {
-                key: key_id,
-                amount: order.amount,
-                currency: order.currency,
-                name: 'Vehicle Rental',
-                description: `Booking #${bookingId}`,
-                order_id: order.id,
-                handler: async function (response) {
-                    // Verify payment
-                    try {
-                        const verifyResponse = await axiosInstance.post('/payments/verify', {
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature
-                        });
-
-                        if (verifyResponse.data.success) {
-                            toast.success('Payment successful!');
-                            navigate('/bookings');
-                        } else {
-                            toast.error('Payment verification failed');
-                        }
-                    } catch (_error) {
-                        toast.error('Payment verification failed');
-                    }
-                },
-                prefill: {
-                    name: booking?.username || '',
-                    email: booking?.email || '',
-                    contact: booking?.phone || ''
-                },
-                notes: {
-                    booking_id: bookingId
-                },
-                theme: {
-                    color: '#000000'
-                },
-                modal: {
-                    ondismiss: function () {
-                        setProcessing(false);
-                        toast.error('Payment cancelled');
-                    }
-                }
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (response) {
-                toast.error('Payment failed: ' + response.error.description);
-                setProcessing(false);
-            });
-            rzp.open();
         } catch (error) {
             console.error('Payment error:', error);
-            toast.error(error.response?.data?.message || 'Failed to initiate payment');
+            toast.error(error.response?.data?.message || 'Failed to process payment');
+        } finally {
             setProcessing(false);
         }
     };
@@ -295,7 +224,7 @@ const Payment = () => {
 
                             <button
                                 onClick={handlePayment}
-                                disabled={processing || !razorpayLoaded}
+                                disabled={processing}
                                 className="w-full py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {processing ? (
@@ -310,12 +239,6 @@ const Payment = () => {
                                     </>
                                 )}
                             </button>
-
-                            {!razorpayLoaded && (
-                                <p className="text-sm text-yellow-600 text-center mt-2">
-                                    Loading payment gateway...
-                                </p>
-                            )}
                         </div>
 
                         {/* Security Info */}

@@ -255,7 +255,7 @@ const Features = () => {
         <section id="features" className="py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-14">
-                    <p className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-2">Why Rentify</p>
+                    <p className="text-sm font-semibold uppercase tracking-widest text-gray-400 mb-2">Why AutoTrack</p>
                     <h2 className="text-4xl font-black">Everything you need for a<br />perfect rental experience</h2>
                 </div>
 
@@ -398,7 +398,7 @@ const Footer = () => {
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                             <LoaderPinwheel className="h-7 w-7" />
-                            <span className="text-xl font-bold">Rentify</span>
+                            <span className="text-xl font-bold">AutoTrack</span>
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed mb-5">
                             Premium vehicle rentals in Bangalore. Drive your dream car today.
@@ -445,7 +445,7 @@ const Footer = () => {
                         <ul className="space-y-3 text-gray-400 text-sm">
                             <li className="flex items-center gap-2">
                                 <Mail size={15} />
-                                <span>support@rentify.in</span>
+                                <span>support@autotrack.in</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <Phone size={15} />
@@ -461,7 +461,7 @@ const Footer = () => {
 
                 {/* Bottom Bar */}
                 <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-gray-500 text-sm">
-                    <p>© {new Date().getFullYear()} Rentify. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} AutoTrack. All rights reserved.</p>
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
                         <a href="#" className="hover:text-white transition-colors">Terms of Service</a>

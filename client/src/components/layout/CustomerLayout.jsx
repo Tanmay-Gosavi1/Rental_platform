@@ -54,7 +54,7 @@ const Navbar = () => {
                     {/* Logo */}
                     <Link to="/" className="flex items-center gap-2">
                         <LoaderPinwheel className="h-8 w-8" />
-                        <span className="text-xl font-bold">Rentify</span>
+                        <span className="text-xl font-bold">AutoTrack</span>
                     </Link>
 
                     {/* Desktop nav */}

@@ -132,6 +132,74 @@ export const verifyPayment = async (req, res) => {
     }
 }
 
+// Dummy payment handler for development/demo mode
+export const dummySuccessPayment = async (req, res) => {
+    try {
+        const { booking_id } = req.body;
+        const user_id = req.user.id;
+
+        if (!booking_id) {
+            return res.status(400).json({ success: false, message: 'Booking ID is required' });
+        }
+
+        const booking = await findBookingById(booking_id);
+        if (!booking) {
+            return res.status(404).json({ success: false, message: 'Booking not found' });
+        }
+
+        if (booking.user_id !== user_id) {
+            return res.status(403).json({ success: false, message: 'Access denied' });
+        }
+
+        if (booking.payment_status === 'paid') {
+            return res.status(200).json({
+                success: true,
+                message: 'Payment already completed',
+                data: {
+                    booking_id,
+                    payment_status: 'paid',
+                    booking_status: booking.status
+                }
+            });
+        }
+
+        let payment = await findPaymentByBookingId(booking_id);
+        let orderId = payment?.razorpay_order_id;
+
+        if (!orderId) {
+            orderId = `dummy_order_${booking_id}_${Date.now()}`;
+            await createPayment({
+                booking_id,
+                user_id,
+                razorpay_order_id: orderId,
+                amount: booking.total_price,
+                currency: 'INR'
+            });
+            payment = await findPaymentByBookingId(booking_id);
+        }
+
+        const paymentId = `dummy_payment_${booking_id}_${Date.now()}`;
+        await updatePaymentSuccess(orderId, paymentId, 'dummy_signature');
+        await updateBookingPaymentStatus(booking_id, 'paid');
+        await updateBookingStatus(booking_id, 'confirmed');
+
+        return res.status(200).json({
+            success: true,
+            message: 'Dummy payment successful',
+            data: {
+                booking_id,
+                order_id: orderId,
+                payment_id: paymentId,
+                payment_status: 'paid',
+                booking_status: 'confirmed'
+            }
+        });
+    } catch (error) {
+        console.error('Dummy payment error:', error);
+        return res.status(500).json({ success: false, message: 'Error processing dummy payment', error: error.message });
+    }
+}
+
 // Get payment status
 export const getPaymentStatus = async (req, res) => {
     try {

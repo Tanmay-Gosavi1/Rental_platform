@@ -62,7 +62,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }) => {
                     <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200">
                         <Link to="/" className="flex items-center gap-2">
                             <LoaderPinwheel className="h-8 w-8" />
-                            <span className="text-xl font-bold">Rentify</span>
+                            <span className="text-xl font-bold">AutoTrack</span>
                         </Link>
                         <button 
                             className="lg:hidden p-1 hover:bg-gray-100 rounded"
